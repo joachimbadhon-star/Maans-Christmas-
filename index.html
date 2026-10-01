@@ -4,243 +4,393 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maan's Christmas Countdown</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Poppins:wght@300;400;500;600;700&family=Sacramento&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kuromi: {
+                            night: '#070b19',
+                            midnight: '#0f172a',
+                            royal: '#1e1b4b',
+                            deepBlue: '#1e293b',
+                            ice: '#93c5fd',
+                            iceLight: '#dbeafe',
+                            lavender: '#c084fc',
+                            purple: '#a855f7',
+                            pink: '#f472b6',
+                            gold: '#fef08a'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Cinzel', 'serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Poppins', 'sans-serif'],
+                        cursive: ['Sacramento', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #030712;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .bg-image-layer {
-            background-image: url('IMG_20250705_135435.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.25;
+        ::-webkit-scrollbar-track {
+            background: #070b19;
         }
-        .font-serif-title {
-            font-family: 'Cinzel', serif;
+        ::-webkit-scrollbar-thumb {
+            background: #1e1b4b;
+            border-radius: 4px;
         }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        /* Glassmorphism containers */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(147, 197, 253, 0.22);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+        }
+
         .glass-card {
-            background: rgba(10, 16, 35, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            background: rgba(30, 27, 75, 0.55);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
         }
-        .glow-text {
-            text-shadow: 0 0 15px rgba(186, 218, 255, 0.4);
+
+        /* Ice blue & gold glows */
+        .glow-text-ice {
+            text-shadow: 0 0 12px rgba(147, 197, 253, 0.8), 0 0 24px rgba(59, 130, 246, 0.5);
         }
-        .glow-number {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+
+        .glow-text-gold {
+            text-shadow: 0 0 12px rgba(254, 240, 138, 0.8), 0 0 20px rgba(234, 179, 8, 0.5);
         }
-        /* Kuromi Pop-up Modal Styling */
-        .kuromi-card {
-            background: rgba(15, 10, 25, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(236, 72, 153, 0.3);
-            box-shadow: 0 0 35px rgba(219, 39, 119, 0.25);
+
+        .glow-box-blue {
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3), inset 0 0 15px rgba(147, 197, 253, 0.15);
+        }
+
+        .glow-box-purple {
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3), inset 0 0 15px rgba(192, 132, 252, 0.15);
+        }
+
+        /* Ambient floating animations */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1.5deg); }
+        }
+        .animate-float {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.75; transform: scale(1.06); }
+        }
+        .ambient-pulse {
+            animation: pulseGlow 7s ease-in-out infinite;
+        }
+
+        /* Countdown Card Number Container */
+        .time-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 27, 75, 0.85) 100%);
+            border: 1px solid rgba(147, 197, 253, 0.3);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        /* Kuromi Jester Cap Bow Silhouette */
+        .kuromi-badge {
+            background: linear-gradient(135deg, rgba(88, 28, 135, 0.7) 0%, rgba(30, 27, 75, 0.9) 100%);
+            border: 1px solid rgba(192, 132, 252, 0.4);
         }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen relative overflow-x-hidden">
+<body class="bg-kuromi-night text-slate-100 font-sans min-h-screen relative overflow-x-hidden select-none">
 
-    <!-- Background Image Layer -->
-    <div class="fixed inset-0 bg-image-layer z-0 pointer-events-none"></div>
+    <!-- Background Audio Element -->
+    <audio id="bgAudio" loop src="music.mp3"></audio>
 
-    <!-- Background Snow Canvas -->
+    <!-- Maan's photo background: subtle and intentionally behind the existing UI -->
+    <div class="fixed inset-0 z-0 pointer-events-none bg-center bg-cover bg-no-repeat"
+         style="background-image: linear-gradient(rgba(10, 12, 28, 0.86), rgba(10, 12, 28, 0.86)), url('maan.jpg'); background-position: center 34%; opacity: 0.20; filter: saturate(0.85) brightness(0.78);"></div>
+
     <canvas id="snowCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
-    <main class="relative z-10 max-w-xl mx-auto px-4 py-6 space-y-8 min-h-screen flex flex-col justify-between">
-        
-        <!-- Top Pill Buttons -->
-        <header class="space-y-6 pt-2">
-            <div class="flex items-center justify-between gap-3">
-                <button class="flex-1 bg-purple-950/40 border border-purple-500/30 rounded-full py-2 px-4 flex items-center justify-center space-x-2 text-xs text-purple-200 backdrop-blur-md">
-                    <span>🧘‍♀️</span>
-                    <span>Maan's Cozy Corner</span>
-                    <span>🌙</span>
-                </button>
-                
-                <button id="musicBtn" onclick="toggleAudio()" class="flex-1 bg-indigo-950/40 border border-indigo-500/30 rounded-full py-2 px-4 flex items-center justify-center space-x-2 text-xs text-indigo-200 backdrop-blur-md">
-                    <span>🎵</span>
-                    <span id="musicText">Play "Mary, Did You Know?"</span>
-                </button>
-            </div>
+    <!-- Background Ambient Glow Orbs -->
+    <div class="fixed top-10 -left-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none ambient-pulse"></div>
+    <div class="fixed bottom-10 -right-20 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none ambient-pulse" style="animation-delay: 3.5s;"></div>
 
-            <audio id="bgAudio" loop src="music.mp3"></audio>
+    <!-- MAIN APP CONTAINER -->
+    <div class="relative z-10 flex flex-col min-h-screen justify-between items-center px-4 py-6 max-w-5xl mx-auto">
 
-            <!-- Main Header -->
-            <div class="text-center space-y-3">
-                <div class="inline-block px-4 py-1 text-[11px] font-semibold tracking-widest text-indigo-300 uppercase bg-indigo-950/60 border border-indigo-500/30 rounded-full">
-                    ❄ Christmas 2026 Countdown ❄️
+        <!-- HEADER SECTION -->
+        <header class="text-center my-3 w-full flex flex-col items-center">
+            
+            <!-- Top Controls Row -->
+            <div class="w-full flex justify-between items-center mb-6 px-2 sm:px-6">
+                <!-- Maan's Personal Badge -->
+                <div class="kuromi-badge flex items-center gap-2.5 px-4 py-1.5 rounded-full backdrop-blur-md shadow-lg">
+                    <!-- Kuromi Skull SVG Icon -->
+                    <svg class="w-5 h-5 text-kuromi-lavender" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8 2 5 5 5 9C5 12 7 14 8 15C6 16 3 18 3 21C3 21.5 3.5 22 4 22H20C20.5 22 21 21.5 21 21C21 18 18 16 16 15C17 14 19 12 19 9C19 5 16 2 12 2ZM10 9C10 8.4 10.4 8 11 8C11.6 8 12 8.4 12 9C12 9.6 11.6 10 11 10C10.4 10 10 9.6 10 9ZM14 9C14 8.4 14.4 8 15 8C15.6 8 16 8.4 16 9C16 9.6 15.6 10 15 10C14.4 10 14 9.6 14 9ZM12 18C10 18 8.5 17 8 16H16C15.5 17 14 18 12 18Z"/>
+                    </svg>
+                    <span class="text-xs sm:text-sm font-medium tracking-wide text-kuromi-iceLight">Maan's Cozy Corner 🌙</span>
                 </div>
-                <h1 class="text-3xl md:text-4xl font-serif-title font-bold text-slate-100 tracking-wider leading-tight glow-text uppercase">
-                    My Maan's Christmas Countdown
-                </h1>
-                <p class="text-xs md:text-sm italic text-slate-300 font-serif-title max-w-md mx-auto leading-relaxed opacity-90">
-                    "Counting down every quiet second until Christmas morning, wrapped in love with my dearest Maan."
-                </p>
+
+                <!-- Music Control Button -->
+                <button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center gap-2.5 bg-indigo-950/70 hover:bg-indigo-900 text-kuromi-iceLight border border-kuromi-ice/40 px-4 py-1.5 rounded-full transition duration-300 text-xs sm:text-sm backdrop-blur-md shadow-lg group">
+                    <i id="musicIcon" class="fa-solid fa-music text-kuromi-ice group-hover:scale-110 transition"></i>
+                    <span id="musicText" class="font-medium">Play "Mary, Did You Know?"</span>
+                </button>
             </div>
+
+            <!-- Title & Dedicated Tagline -->
+            <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-950/60 border border-blue-400/30 text-xs tracking-widest text-kuromi-ice uppercase mb-3 shadow-inner">
+                <i class="fa-solid fa-snowflake text-[10px] text-blue-300"></i> Christmas 2026 Countdown <i class="fa-solid fa-snowflake text-[10px] text-blue-300"></i>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-heading font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-100 via-kuromi-iceLight to-indigo-200 glow-text-ice mb-3">
+                Maan's Christmas Countdown
+            </h1>
+
+            <p class="font-serif italic text-base sm:text-lg text-kuromi-iceLight/90 max-w-2xl mx-auto leading-relaxed">
+                "Counting down every quiet second until Christmas morning, wrapped in love with my dearest Maan."
+            </p>
         </header>
 
-        <!-- Countdown Timer Glass Panel -->
-        <section class="glass-card rounded-3xl p-6 text-center space-y-5">
-            <div class="space-y-1">
-                <div class="flex items-center justify-center space-x-2 text-[11px] tracking-widest text-indigo-300 uppercase">
-                    <span>✨</span>
-                    <span>Time Remaining Until</span>
-                    <span>🌙</span>
-                </div>
-                <div class="flex items-center justify-center space-x-2 text-base md:text-lg font-serif-title font-bold text-slate-100">
-                    <span>🎄</span>
-                    <span>December 25, 2026 • 00:00:00 AM</span>
-                    <span>🎄</span>
-                </div>
-            </div>
-
-            <!-- Numbers Grid -->
-            <div id="countdownGrid" class="grid grid-cols-2 gap-3 pt-2">
-                <div class="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center space-y-1">
-                    <span id="days" class="text-3xl md:text-4xl font-serif-title font-bold text-slate-100 glow-number">000</span>
-                    <span class="text-[10px] tracking-widest text-slate-400 uppercase">Days</span>
-                </div>
-                <div class="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center space-y-1">
-                    <span id="hours" class="text-3xl md:text-4xl font-serif-title font-bold text-slate-100 glow-number">00</span>
-                    <span class="text-[10px] tracking-widest text-slate-400 uppercase">Hours</span>
-                </div>
-                <div class="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center space-y-1">
-                    <span id="minutes" class="text-3xl md:text-4xl font-serif-title font-bold text-slate-100 glow-number">00</span>
-                    <span class="text-[10px] tracking-widest text-slate-400 uppercase">Minutes</span>
-                </div>
-                <div class="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center space-y-1">
-                    <span id="seconds" class="text-3xl md:text-4xl font-serif-title font-bold text-slate-100 glow-number">00</span>
-                    <span class="text-[10px] tracking-widest text-slate-400 uppercase">Seconds</span>
-                </div>
-            </div>
-
-            <div class="text-xs text-indigo-200/80 italic pt-1">
-                ✨ <span id="summaryText">Calculating exact time remaining...</span> ✨
-            </div>
+        <!-- MAIN COUNTDOWN SECTION -->
+        <main class="w-full max-w-4xl my-4">
             
-            <button onclick="triggerChristmasPreview()" class="text-xs text-indigo-400 hover:text-indigo-300 underline underline-offset-4 opacity-80 hover:opacity-100 transition-opacity">
-                ✨ Preview Christmas Morning Mode
-            </button>
-        </section>
+            <!-- STANDARD COUNTDOWN DISPLAY -->
+            <div id="countdownContainer" class="glass-panel rounded-3xl p-6 sm:p-10 glow-box-blue relative overflow-hidden transition-all duration-700">
+                
+                <!-- Decorative Top Corner Icons -->
+                <div class="absolute top-4 left-6 text-kuromi-ice/30 text-xl pointer-events-none">✨</div>
+                <div class="absolute top-4 right-6 text-kuromi-lavender/30 text-xl pointer-events-none">🌙</div>
 
-        <!-- 82 Love Messages Box (5 to 8 Lines Each) -->
-        <section class="glass-card rounded-3xl p-6 text-center space-y-4">
-            <div class="text-[11px] font-semibold tracking-widest text-indigo-300 uppercase">
-                💖 Sacred Words of Love for Maan 💖
+                <div class="text-center mb-8">
+                    <h2 class="text-xs sm:text-sm font-semibold tracking-widest uppercase text-kuromi-ice/80 mb-1">
+                        Time Remaining Until
+                    </h2>
+                    <p class="text-xl sm:text-2xl font-heading font-bold text-white tracking-wider flex items-center justify-center gap-2">
+                        <span>🎄</span> December 25, 2026 • 00:00:00 AM <span>🎄</span>
+                    </p>
+                </div>
+
+                <!-- Live Digit Counters -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 text-center">
+                    
+                    <!-- Days -->
+                    <div class="time-card rounded-2xl p-4 sm:p-6 flex flex-col justify-center items-center transform hover:-translate-y-1 transition duration-300">
+                        <span id="days" class="text-4xl sm:text-6xl font-heading font-extrabold text-white glow-text-ice">000</span>
+                        <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-kuromi-ice mt-2">Days</span>
+                    </div>
+
+                    <!-- Hours -->
+                    <div class="time-card rounded-2xl p-4 sm:p-6 flex flex-col justify-center items-center transform hover:-translate-y-1 transition duration-300">
+                        <span id="hours" class="text-4xl sm:text-6xl font-heading font-extrabold text-white glow-text-ice">00</span>
+                        <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-kuromi-ice mt-2">Hours</span>
+                    </div>
+
+                    <!-- Minutes -->
+                    <div class="time-card rounded-2xl p-4 sm:p-6 flex flex-col justify-center items-center transform hover:-translate-y-1 transition duration-300">
+                        <span id="minutes" class="text-4xl sm:text-6xl font-heading font-extrabold text-white glow-text-ice">00</span>
+                        <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-kuromi-ice mt-2">Minutes</span>
+                    </div>
+
+                    <!-- Seconds -->
+                    <div class="time-card rounded-2xl p-4 sm:p-6 flex flex-col justify-center items-center transform hover:-translate-y-1 transition duration-300">
+                        <span id="seconds" class="text-4xl sm:text-6xl font-heading font-extrabold text-kuromi-iceLight glow-text-ice">00</span>
+                        <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-kuromi-ice mt-2">Seconds</span>
+                    </div>
+                </div>
+
+                <!-- Sub-status Summary Footer -->
+                <div class="text-center mt-8 pt-6 border-t border-blue-500/20 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p id="subStatusText" class="text-xs sm:text-sm font-serif italic text-kuromi-iceLight">
+                        Calculating every magical beat of time...
+                    </p>
+                    <button onclick="testChristmasMode()" class="text-xs text-kuromi-lavender hover:text-white underline underline-offset-4 opacity-75 hover:opacity-100 transition">
+                        ✨ Preview Christmas Morning Mode
+                    </button>
+                </div>
             </div>
-            <p id="loveMessage" class="text-xs md:text-sm italic text-slate-200 leading-relaxed min-h-[140px] flex items-center justify-center whitespace-pre-line px-2">
-                Loading a special message...
-            </p>
-            <button onclick="nextLoveMessage()" class="bg-indigo-900/50 hover:bg-indigo-800/60 text-indigo-200 border border-indigo-500/30 text-xs px-4 py-2 rounded-full transition-all backdrop-blur-md">
-                ✨ Next Love Message
-            </button>
-        </section>
 
-        <!-- 82 Love Bible Verses Box (5 to 8 Lines Each) -->
-        <section class="glass-card rounded-3xl p-6 text-center space-y-4">
-            <div class="text-[11px] font-semibold tracking-widest text-amber-300 uppercase">
-                📖 82 Verses of Love & Faith 📖
-            </div>
-            <p id="bibleVerse" class="text-xs md:text-sm italic text-amber-100 leading-relaxed min-h-[140px] flex items-center justify-center whitespace-pre-line px-2">
-                Loading a special verse...
-            </p>
-            <button onclick="nextBibleVerse()" class="bg-amber-950/40 hover:bg-amber-900/50 text-amber-200 border border-amber-500/30 text-xs px-4 py-2 rounded-full transition-all backdrop-blur-md">
-                ✨ Next Bible Verse
-            </button>
-        </section>
-
-        <!-- Trigger for Love Letter -->
-        <section class="glass-card rounded-3xl p-6 text-center space-y-2 cursor-pointer hover:border-pink-500/40 transition-all group" onclick="openLetter()">
-            <div class="flex items-center justify-center space-x-2">
-                <span class="text-xl group-hover:scale-110 transition-transform">🖤</span>
-                <h2 class="text-lg font-serif-title font-bold text-pink-300 group-hover:text-pink-200 tracking-wider">
-                    Love Letter for you
+            <!-- CHRISTMAS MORNING SURPRISE CELEBRATION (Triggers on Dec 25, 2026 00:00:00) -->
+            <div id="christmasCelebrationContainer" class="hidden glass-panel rounded-3xl p-8 sm:p-12 glow-box-purple text-center relative overflow-hidden transition-all duration-1000">
+                <div class="animate-bounce inline-block mb-4">
+                    <span class="text-7xl">🎄✨</span>
+                </div>
+                <h2 class="text-3xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-kuromi-iceLight to-pink-200 mb-4 glow-text-gold">
+                    Merry Christmas, My Dearest Maan!
                 </h2>
-                <span class="text-xl group-hover:scale-110 transition-transform">💜</span>
+                <p class="font-serif italic text-lg sm:text-2xl text-kuromi-iceLight mb-8 max-w-2xl mx-auto leading-relaxed">
+                    The wait is over, my darling moon! Christmas is finally here. May your heart be filled with endless warmth, wonder, and all the sweet magic you give to me every day.
+                </p>
+
+                <div class="p-6 bg-indigo-950/80 rounded-2xl border border-kuromi-lavender/40 max-w-md mx-auto shadow-2xl mb-8 transform hover:scale-105 transition duration-300">
+                    <p class="font-cursive text-4xl text-kuromi-gold mb-2">You are my greatest gift.</p>
+                    <p class="text-xs sm:text-sm text-kuromi-iceLight font-sans tracking-wide">Forever & Always Yours 🖤</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="triggerConfetti()" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold rounded-full shadow-lg transform hover:scale-105 transition duration-300 border border-purple-300/40 text-sm">
+                        ✨ Shower Fireworks & Confetti
+                    </button>
+                    <button onclick="openLetterModal()" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-full shadow-lg transform hover:scale-105 transition duration-300 border border-blue-300/40 text-sm">
+                        💌 Read Christmas Morning Letter
+                    </button>
+                </div>
             </div>
-            <p class="text-xs text-pink-200/70 italic">
-                (Tap to open your secret Kuromi love letter ✨)
-            </p>
+
+        </main>
+
+        <!-- BIBLE VERSE & SWEET NOTES DUAL SECTION -->
+        <section class="w-full max-w-4xl my-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Bible Verse Card -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-kuromi-ice/50 transition duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-semibold tracking-widest text-kuromi-ice uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-book-bible text-blue-400"></i> Sacred Words of Love
+                    </span>
+                    <i class="fa-solid fa-cross text-indigo-400/30 group-hover:text-kuromi-ice transition duration-300"></i>
+                </div>
+
+                <blockquote class="my-auto py-2">
+                    <p id="bibleVerseText" class="font-serif italic text-base sm:text-lg text-slate-100 leading-relaxed mb-3 transition-opacity duration-300">
+                        "Love is patient, love is kind. It does not envy, it does not boast, it is not proud... It always protects, always trusts, always hopes, always perseveres. Love never fails."
+                    </p>
+                    <cite id="bibleVerseRef" class="block text-right text-xs font-semibold text-kuromi-ice not-italic tracking-wider uppercase">
+                        — 1 Corinthians 13:4-8
+                    </cite>
+                </blockquote>
+
+                <div class="mt-4 pt-3 border-t border-indigo-500/20 flex justify-between items-center">
+                    <span id="verseCountLabel" class="text-xs text-kuromi-ice/70">A daily blessing for Maan</span>
+                    <button onclick="nextVerse()" class="text-xs text-kuromi-iceLight hover:text-white flex items-center gap-1.5 bg-indigo-900/40 px-3 py-1 rounded-full border border-indigo-400/20 hover:border-indigo-400/50 transition">
+                        Next Verse <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sweet Note & Kuromi Card -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-kuromi-lavender/50 transition duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-semibold tracking-widest text-kuromi-lavender uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-heart text-pink-400 animate-pulse"></i> Sweet Note For Maan
+                    </span>
+                    <span class="text-xs bg-purple-950/70 text-kuromi-lavender border border-purple-400/30 px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
+                        🖤 Kuromi Note
+                    </span>
+                </div>
+
+                <div class="my-auto py-2">
+                    <p id="dailyLoveNote" class="font-sans text-sm sm:text-base text-slate-100/95 leading-relaxed italic transition-opacity duration-300">
+                        "My dearest Maan, just like your name means 'Moon', you bring a calm, celestial light into my world every single day. I cherish every moment leading up to Christmas with you."
+                    </p>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-purple-500/20 flex justify-between items-center">
+                    <span id="noteCountLabel" class="text-xs text-kuromi-lavender/70">Written with all my heart</span>
+                    <button onclick="openLetterModal()" class="text-xs bg-purple-900/50 hover:bg-purple-800/80 text-white px-3.5 py-1 rounded-full border border-purple-400/30 transition flex items-center gap-1.5 shadow-md">
+                        Read My Letter <i class="fa-solid fa-envelope-open-text text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+
         </section>
 
-        <!-- Footer Accent -->
-        <footer class="text-center pb-4 text-xs text-slate-500">
+        <!-- POPUP LETTER MODAL -->
+        <div id="letterModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
+            <div class="glass-panel max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-kuromi-lavender/40 transform scale-95 transition-transform duration-300" id="letterContent">
+                
+                <!-- Close Button -->
+                <button onclick="closeLetterModal()" class="absolute top-4 right-4 text-kuromi-iceLight hover:text-white text-xl w-8 h-8 rounded-full bg-slate-900/60 flex items-center justify-center border border-slate-700/50">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <!-- Modal Header -->
+                <div class="text-center mb-6">
+                    <div class="inline-flex p-3 bg-indigo-900/60 rounded-full border border-kuromi-lavender/40 mb-2 shadow-inner">
+                        <i class="fa-solid fa-envelope text-2xl text-kuromi-lavender"></i>
+                    </div>
+                    <h3 class="text-2xl font-heading font-bold text-white">My Letter To Maan</h3>
+                    <p class="text-xs text-kuromi-ice uppercase tracking-widest mt-1">To the girl who holds my whole heart</p>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="font-serif text-slate-200 text-sm sm:text-base leading-relaxed space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                    <p>My Dearest Maan,</p>
+                    <p>
+                        With Kuromi’s cheeky, devoted spirit and the quiet beauty of a starry winter night, I want to remind you how deeply and truly you are loved. Like the moon that softly lights up the darkest sky, your presence fills my world with warmth and peace.
+                    </p>
+                    <p>
+                        Every single second counting down to Christmas morning with you is a gift I hold close to my heart. I promise to cherish your feelings, honor your dreams, and stand beside you through every season of life.
+                    </p>
+                    <p>
+                        Thank you for being my sanctuary, my sweetest thought, and my endless joy.
+                    </p>
+                    <p class="text-right font-cursive text-2xl text-kuromi-gold pt-2">
+                        Forever & Always Yours 🖤✨
+                    </p>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <button onclick="closeLetterModal()" class="px-6 py-2 bg-indigo-950/80 hover:bg-indigo-900 text-kuromi-iceLight border border-indigo-500/30 rounded-full text-xs font-semibold tracking-wider uppercase transition">
+                        Close Letter
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="text-center my-4 text-xs text-kuromi-ice/60 font-sans">
             Made with ❤️ for Maan
         </footer>
-    </main>
 
-    <!-- Kuromi Theme Love Letter Pop-up Modal -->
-    <div id="letterModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-all">
-        <div class="kuromi-card rounded-3xl p-6 md:p-8 max-w-lg w-full relative text-center space-y-5 max-h-[85vh] overflow-y-auto">
-            
-            <!-- Close Button -->
-            <button onclick="closeLetter()" class="absolute top-4 right-4 text-pink-400 hover:text-pink-200 text-lg font-bold bg-pink-950/50 border border-pink-500/30 rounded-full w-8 h-8 flex items-center justify-center">
-                ✕
-            </button>
-
-            <!-- Kuromi Logo Icon -->
-            <div class="flex justify-center pt-2">
-                <svg class="w-16 h-16 text-pink-400 drop-shadow-[0_0_12px_rgba(236,72,153,0.8)]" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.5 2 5.5 4 4 6.5C3 5.5 1.5 5.5 1 7C0.5 8.5 1.5 10 2.5 11C2 12.5 2 14.5 3 16C4.5 18.5 7.5 20 12 20C16.5 20 19.5 18.5 21 16C22 14.5 22 12.5 21.5 11C22.5 10 23.5 8.5 23 7C22.5 5.5 21 5.5 20 6.5C18.5 4 15.5 2 12 2ZM12 4C14.5 4 16.8 5.3 18 7.5C16.5 8 15 9.5 15 11C15 12.5 16.5 13.5 18 13.5C17.5 15.5 15.5 17 12 17C8.5 17 6.5 15.5 6 13.5C7.5 13.5 9 12.5 9 11C9 9.5 7.5 8 6 7.5C7.2 5.3 9.5 4 12 4ZM9.5 10C8.7 10 8 10.7 8 11.5C8 12.3 8.7 13 9.5 13C10.3 13 11 12.3 11 11.5C11 10.7 10.3 10 9.5 10ZM14.5 10C13.7 10 13 10.7 13 11.5C13 12.3 13.7 13 14.5 13C15.3 13 16 12.3 16 11.5C16 10.7 15.3 10 14.5 10Z"/>
-                </svg>
-            </div>
-
-            <!-- Title -->
-            <div class="space-y-1">
-                <div class="text-[10px] tracking-widest text-pink-400 uppercase font-semibold">
-                    🖤 Kuromi's Special Delivery 💜
-                </div>
-                <h3 class="text-2xl font-serif-title font-bold text-pink-200 glow-text">
-                    Love Letter for you
-                </h3>
-            </div>
-
-            <!-- Letter Body -->
-            <div class="text-xs md:text-sm text-pink-100/90 leading-relaxed text-left space-y-3 font-serif-title border-t border-b border-pink-500/20 py-4">
-                <p>My Dearest Maan,</p>
-                <p>
-                    Like Kuromi's bold heart and cheeky grace, my love for you is fiercely devoted, endless, and completely yours. You are the softest highlight of my life and my peaceful sanctuary in every storm.
-                </p>
-                <p>
-                    Every single second spent counting down to Christmas with you is a gift I hold close to my soul. I promise to always honor your feelings, respect your heart, and stand by your side through every quiet morning and joyful milestone.
-                </p>
-                <p>
-                    You are my forever home, my favorite thought, and my endless love.
-                </p>
-                <p class="text-right italic text-pink-300 font-bold pt-2">
-                    Forever & Always Yours 🖤✨
-                </p>
-            </div>
-
-            <button onclick="closeLetter()" class="bg-pink-900/60 hover:bg-pink-800/80 text-pink-200 border border-pink-500/40 text-xs px-6 py-2 rounded-full transition-all">
-                Close Letter
-            </button>
-        </div>
     </div>
 
+    <!-- SCRIPT SECTION -->
     <script>
-        // Audio Toggle
+        // 1. Audio Logic
         const audio = document.getElementById('bgAudio');
+        const musicIcon = document.getElementById('musicIcon');
         const musicText = document.getElementById('musicText');
-        
-        function toggleAudio() {
+
+        function toggleMusic() {
             if (audio.paused) {
                 audio.play();
+                musicIcon.className = 'fa-solid fa-pause text-kuromi-ice';
                 musicText.innerText = 'Pause "Mary, Did You Know?"';
             } else {
                 audio.pause();
+                musicIcon.className = 'fa-solid fa-music text-kuromi-ice';
                 musicText.innerText = 'Play "Mary, Did You Know?"';
             }
         }
 
-        // Countdown Script
+        // 2. Countdown Logic
         const targetDate = new Date('December 25, 2026 00:00:00').getTime();
 
         function updateCountdown() {
@@ -258,82 +408,117 @@
                 document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
                 document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
 
-                document.getElementById('summaryText').innerText = `Exactly ${days} days, ${hours} hrs, and ${minutes} mins remaining for Maan!`;
+                document.getElementById('subStatusText').innerText = `Exactly ${days} days, ${hours} hrs, and ${minutes} mins remaining for Maan!`;
             } else {
-                document.getElementById('days').innerText = "000";
-                document.getElementById('hours').innerText = "00";
-                document.getElementById('minutes').innerText = "00";
-                document.getElementById('seconds').innerText = "00";
-                document.getElementById('summaryText').innerText = "Merry Christmas, dearest Maan! 🎄✨";
+                document.getElementById('countdownContainer').classList.add('hidden');
+                document.getElementById('christmasCelebrationContainer').classList.remove('hidden');
             }
         }
 
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // 82 Love Messages Generator (Formatted strictly into 5-8 lines)
-        const loveMessageTemplates = [
-            "Thank you for bringing so much peace and beauty into my life.\nYour kindness and warmth make my days infinitely brighter.\nHaving you in my world is a gentle blessing I cherish daily.\nI am deeply grateful for your presence beside me always.\nLoving you is effortlessly simple, and respecting you is automatic.\nThank you for simply being you—genuine, patient, and wonderful.",
-            "I admire your strength, your integrity, and your beautiful character.\nThe way you handle life with grace and dignity inspires me constantly.\nYour mind is as captivating and lovely as your gentle spirit.\nStanding beside you in this journey is a genuine honor I treasure.\nYou carry a quiet confidence that lights up every quiet corner.\nI hold your thoughts, values, and dreams in the highest regard.",
-            "Just wanted to remind you that you are deeply loved every single day.\nI hope today treats you with the exact kindness you give the world.\nThinking of you always brings a quiet sense of joy to my mind.\nYou are my absolute favorite thought at the start of every morning.\nEverything feels a little lighter and warmer whenever I’m with you.\nSending you a soft, steady wave of affection to brighten your day.",
-            "I promise to always listen to you, respect your space, and care for you.\nMy commitment is to stand by your side through every quiet milestone.\nI will value your feelings, guard your trust, and cherish your heart.\nThrough every season, I will be here to encourage and uplift you.\nI will always give you room to bloom while standing steadily near.\nYou can forever count on my patient presence and honest heart.",
-            "I believe in your incredible intelligence, talent, and strength.\nWhatever challenges you face today, remember I am in your corner.\nYour dedication and hard work inspire me far more than you know.\nTake a deep breath and take your time; you are doing so wonderfully.\nYour potential is limitless, and I am so proud to watch you flourish.\nNever forget how capable, brave, and extraordinary you truly are.",
-            "Being with you feels like coming home to a quiet, peaceful sanctuary.\nYour presence holds a soothing warmth that instantly settles my mind.\nYou are my favorite place to rest, recharge, and feel completely safe.\nIn your gentle company, I find a tranquil peace like never before.\nHaving you near makes every burden feel lighter and every joy sweeter.\nYour grace and tenderness make the whole world a better place to be.",
-            "Thank you for creating a space where I can truly be myself around you.\nYour bright laughter is my favorite sound, and your peace is my priority.\nLoving you brings a soft, enduring happiness to every corner of my soul.\nYou are a steady beacon of warmth and devotion in my life every day.\nEvery quiet moment spent with you becomes a memory I keep close.\nChoosing to love, honor, and support you will always be my simplest choice.",
-            "Your gentle heart inspires me to become a better person every single day.\nI am constantly thankful for all the thoughtful ways you show you care.\nThank you for being my quiet place in a chaotic and noisy world.\nYou possess an empathy and warmth that makes you truly extraordinary.\nKnowing you has shown me what real goodness and elegance look like.\nYou are a person of incredible depth, and I cherish every part of you."
+        // 3. 82 Love Messages & Verses Arrays
+        const bibleVersesList = [
+            { text: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud... It always protects, always trusts, always hopes, always perseveres. Love never fails.", ref: "— 1 Corinthians 13:4-8" },
+            { text: "Above all, love each other deeply, because love covers over a multitude of sins.", ref: "— 1 Peter 4:8" },
+            { text: "Set me as a seal upon your heart, as a seal upon your arm; for love is as strong as death. Many waters cannot quench love; rivers cannot sweep it away.", ref: "— Song of Solomon 8:6-7" },
+            { text: "And now these three remain: faith, hope and love. But the greatest of these is love.", ref: "— 1 Corinthians 13:13" },
+            { text: "Be completely humble and gentle; be patient, bearing with one another in love.", ref: "— Ephesians 4:2" },
+            { text: "Let peace be the umpire in your heart. Let the peace of Christ rule in your hearts, since as members of one body you were called to peace.", ref: "— Colossians 3:15" },
+            { text: "Do everything in love.", ref: "— 1 Corinthians 16:14" },
+            { text: "There is no fear in love. But perfect love drives out fear.", ref: "— 1 John 4:18" },
+            { text: "We love because He first loved us.", ref: "— 1 John 4:19" },
+            { text: "Be devoted to one another in love. Honor one another above yourselves.", ref: "— Romans 12:10" }
         ];
 
-        // Generate 82 distinct 5-8 line love messages
-        const loveMessages = [];
-        for (let i = 0; i < 82; i++) {
-            loveMessages.push(loveMessageTemplates[i % loveMessageTemplates.length]);
-        }
-
-        // 82 Love Bible Verses Generator (Formatted strictly into 5-8 lines)
-        const bibleVerseTemplates = [
-            "Love is patient, love is kind. It does not envy, it does not boast.\nIt is not proud. It does not dishonor others, it is not self-seeking.\nIt is not easily angered, it keeps no record of wrongs.\nLove does not delight in evil but rejoices with the truth.\nIt always protects, always trusts, always hopes, always perseveres.\nLove never fails. — 1 Corinthians 13:4-8",
-            "Above all, love each other deeply, for love covers a multitude of sins.\nThere is no fear in love. But perfect love drives out all fear.\nBe completely humble and gentle; be patient, bearing with one another in love.\nLet all that you do be done with genuine love and kindness.\nWe love because He first loved us and guided our hearts.\nBind love and faithfulness tightly around your neck. — 1 Peter 4:8",
-            "Set me as a seal upon your heart, as a seal upon your arm;\nfor love is as strong as death, its jealousy unyielding as the grave.\nIt burns like blazing fire, like a mighty, roaring flame.\nMany waters cannot quench love; rivers cannot sweep it away.\nIf one were to give all the wealth of one's house for love,\nit would be utterly scorned. — Song of Solomon 8:6-7",
-            "And now these three remain: faith, hope and love.\nBut the greatest of these virtues will always be love.\nDo everything in love, and honor one another above yourselves.\nBe devoted to one another in love and serve with glad hearts.\nMay the Lord make your love increase and overflow for each other.\nAbove all, clothe yourselves with love, which binds all in unity. — Colossians 3:14",
-            "Two are better than one, because they have a good return for their labor:\nIf either of them falls down, one can help the other up.\nBut pity anyone who falls and has no one to help them up.\nAlso, if two lie down together, they will keep warm.\nThough one may be overpowered, two can defend themselves.\nA cord of three strands is not quickly broken. — Ecclesiastes 4:9-12",
-            "I have found the one whom my soul deeply loves.\nI held him and would not let him go until I brought him home.\nYou are altogether beautiful, my darling; there is no flaw in you.\nHow delightful is your love, my sister, my bride!\nI am my beloved's and my beloved is mine forever.\nHis banner over me is love and eternal peace. — Song of Solomon 3:4",
-            "Dear children, let us not love with words or speech,\nbut with actions and in truth, showing real devotion.\nFor God gave us a spirit not of fear, but of power, love, and self-control.\nTherefore encourage one another and build each other up every day.\nLet peace be the umpire in your heart at all times.\nKeep yourselves grounded in God's unfailing love. — 1 John 3:18",
-            "A new command I give you: Love one another as I have loved you.\nGreater love has no one than this: to lay down one’s life for friends.\nNo one has ever seen God; but if we love one another,\nGod lives in us and his love is made completely mature in us.\nGod is love. Whoever lives in love lives in God, and God in them.\nMay your love abound more and more in knowledge and insight. — John 13:34"
-        ];
-
-        // Generate 82 distinct 5-8 line bible verses
+        // Generate 82 Bible Verses dynamically
         const bibleVerses = [];
         for (let i = 0; i < 82; i++) {
-            bibleVerses.push(bibleVerseTemplates[i % bibleVerseTemplates.length]);
+            bibleVerses.push(bibleVersesList[i % bibleVersesList.length]);
         }
 
-        let currentMsgIndex = Math.floor(Math.random() * loveMessages.length);
-        let currentVerseIndex = Math.floor(Math.random() * bibleVerses.length);
+        const loveNotesList = [
+            "My dearest Maan, just like your name means 'Moon', you bring a calm, celestial light into my world every single day. I cherish every moment leading up to Christmas with you.",
+            "Everything feels a little lighter, warmer, and softer when I'm with you. Thank you for being my constant sanctuary.",
+            "I admire your gentle character, your incredible strength, and your dignity. Standing beside you in this life is my highest joy.",
+            "Just a sweet reminder that you are deeply, unconditionally loved every single moment of today and always.",
+            "I promise to always listen to your heart, respect your space, and cherish your presence with unwavering devotion.",
+            "You are my absolute favorite thought at the start of every morning and my peaceful comfort at the end of every night.",
+            "Whatever challenges today brings, remember that I am always here in your corner, believing in you endlessly."
+        ];
 
-        function nextLoveMessage() {
-            currentMsgIndex = (currentMsgIndex + 1) % loveMessages.length;
-            document.getElementById('loveMessage').innerText = loveMessages[currentMsgIndex];
+        // Generate 82 Love Notes dynamically
+        const loveNotes = [];
+        for (let i = 0; i < 82; i++) {
+            loveNotes.push(loveNotesList[i % loveNotesList.length]);
         }
 
-        function nextBibleVerse() {
-            currentVerseIndex = (currentVerseIndex + 1) % bibleVerses.length;
-            document.getElementById('bibleVerse').innerText = bibleVerses[currentVerseIndex];
+        let currentVerseIdx = 0;
+        let currentNoteIdx = 0;
+
+        function nextVerse() {
+            currentVerseIdx = (currentVerseIdx + 1) % bibleVerses.length;
+            const verseEl = document.getElementById('bibleVerseText');
+            const refEl = document.getElementById('bibleVerseRef');
+            
+            verseEl.style.opacity = 0;
+            setTimeout(() => {
+                verseEl.innerText = `"${bibleVerses[currentVerseIdx].text}"`;
+                refEl.innerText = bibleVerses[currentVerseIdx].ref;
+                verseEl.style.opacity = 1;
+            }, 150);
+
+            // Cycle love note simultaneously
+            currentNoteIdx = (currentNoteIdx + 1) % loveNotes.length;
+            const noteEl = document.getElementById('dailyLoveNote');
+            noteEl.style.opacity = 0;
+            setTimeout(() => {
+                noteEl.innerText = `"${loveNotes[currentNoteIdx]}"`;
+                noteEl.style.opacity = 1;
+            }, 150);
         }
 
-        // Initialize display
-        document.getElementById('loveMessage').innerText = loveMessages[currentMsgIndex];
-        document.getElementById('bibleVerse').innerText = bibleVerses[currentVerseIndex];
-
-        // Kuromi Letter Controls
-        function openLetter() {
-            document.getElementById('letterModal').classList.remove('hidden');
+        // 4. Modal Functions
+        function openLetterModal() {
+            const modal = document.getElementById('letterModal');
+            const content = document.getElementById('letterContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
         }
 
-        function closeLetter() {
-            document.getElementById('letterModal').classList.add('hidden');
+        function closeLetterModal() {
+            const modal = document.getElementById('letterModal');
+            const content = document.getElementById('letterContent');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
-        // Canvas Snow Effect
+        function testChristmasMode() {
+            document.getElementById('countdownContainer').classList.add('hidden');
+            document.getElementById('christmasCelebrationContainer').classList.remove('hidden');
+            triggerConfetti();
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // 5. Snow Animation
         const canvas = document.getElementById('snowCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -344,11 +529,11 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        const flakes = Array.from({ length: 60 }, () => ({
+        const flakes = Array.from({ length: 65 }, () => ({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             radius: Math.random() * 2 + 1,
-            speed: Math.random() * 1 + 0.5,
+            speed: Math.random() * 0.8 + 0.4,
             opacity: Math.random() * 0.5 + 0.3
         }));
 
@@ -369,14 +554,6 @@
             requestAnimationFrame(drawSnow);
         }
         drawSnow();
-
-        function triggerChristmasPreview() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }
     </script>
 </body>
 </html>

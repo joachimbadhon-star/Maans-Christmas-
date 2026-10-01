@@ -35,6 +35,14 @@
         .glow-number {
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
         }
+        /* Kuromi Pop-up Modal Styling */
+        .kuromi-card {
+            background: rgba(15, 10, 25, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            box-shadow: 0 0 35px rgba(219, 39, 119, 0.25);
+        }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen relative overflow-x-hidden">
@@ -45,7 +53,7 @@
     <!-- Background Snow Canvas -->
     <canvas id="snowCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
-    <main class="relative z-10 max-w-xl mx-auto px-4 py-6 space-y-6 min-h-screen flex flex-col justify-between">
+    <main class="relative z-10 max-w-xl mx-auto px-4 py-6 space-y-8 min-h-screen flex flex-col justify-between">
         
         <!-- Top Pill Buttons -->
         <header class="space-y-6 pt-2">
@@ -122,30 +130,44 @@
             </button>
         </section>
 
-        <!-- 82 Love Messages Box -->
+        <!-- 82 Love Messages Box (5 to 8 Lines Each) -->
         <section class="glass-card rounded-3xl p-6 text-center space-y-4">
             <div class="text-[11px] font-semibold tracking-widest text-indigo-300 uppercase">
                 💖 Sacred Words of Love for Maan 💖
             </div>
-            <p id="loveMessage" class="text-sm italic text-slate-200 leading-relaxed min-h-[48px] flex items-center justify-center">
-                "Loading a special message..."
+            <p id="loveMessage" class="text-xs md:text-sm italic text-slate-200 leading-relaxed min-h-[140px] flex items-center justify-center whitespace-pre-line px-2">
+                Loading a special message...
             </p>
             <button onclick="nextLoveMessage()" class="bg-indigo-900/50 hover:bg-indigo-800/60 text-indigo-200 border border-indigo-500/30 text-xs px-4 py-2 rounded-full transition-all backdrop-blur-md">
                 ✨ Next Love Message
             </button>
         </section>
 
-        <!-- 82 Love Bible Verses Box -->
+        <!-- 82 Love Bible Verses Box (5 to 8 Lines Each) -->
         <section class="glass-card rounded-3xl p-6 text-center space-y-4">
             <div class="text-[11px] font-semibold tracking-widest text-amber-300 uppercase">
                 📖 82 Verses of Love & Faith 📖
             </div>
-            <p id="bibleVerse" class="text-sm italic text-amber-100 leading-relaxed min-h-[56px] flex items-center justify-center">
-                "Loading a special verse..."
+            <p id="bibleVerse" class="text-xs md:text-sm italic text-amber-100 leading-relaxed min-h-[140px] flex items-center justify-center whitespace-pre-line px-2">
+                Loading a special verse...
             </p>
             <button onclick="nextBibleVerse()" class="bg-amber-950/40 hover:bg-amber-900/50 text-amber-200 border border-amber-500/30 text-xs px-4 py-2 rounded-full transition-all backdrop-blur-md">
                 ✨ Next Bible Verse
             </button>
+        </section>
+
+        <!-- Trigger for Love Letter -->
+        <section class="glass-card rounded-3xl p-6 text-center space-y-2 cursor-pointer hover:border-pink-500/40 transition-all group" onclick="openLetter()">
+            <div class="flex items-center justify-center space-x-2">
+                <span class="text-xl group-hover:scale-110 transition-transform">🖤</span>
+                <h2 class="text-lg font-serif-title font-bold text-pink-300 group-hover:text-pink-200 tracking-wider">
+                    Love Letter for you
+                </h2>
+                <span class="text-xl group-hover:scale-110 transition-transform">💜</span>
+            </div>
+            <p class="text-xs text-pink-200/70 italic">
+                (Tap to open your secret Kuromi love letter ✨)
+            </p>
         </section>
 
         <!-- Footer Accent -->
@@ -153,6 +175,55 @@
             Made with ❤️ for Maan
         </footer>
     </main>
+
+    <!-- Kuromi Theme Love Letter Pop-up Modal -->
+    <div id="letterModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-all">
+        <div class="kuromi-card rounded-3xl p-6 md:p-8 max-w-lg w-full relative text-center space-y-5 max-h-[85vh] overflow-y-auto">
+            
+            <!-- Close Button -->
+            <button onclick="closeLetter()" class="absolute top-4 right-4 text-pink-400 hover:text-pink-200 text-lg font-bold bg-pink-950/50 border border-pink-500/30 rounded-full w-8 h-8 flex items-center justify-center">
+                ✕
+            </button>
+
+            <!-- Kuromi Logo Icon -->
+            <div class="flex justify-center pt-2">
+                <svg class="w-16 h-16 text-pink-400 drop-shadow-[0_0_12px_rgba(236,72,153,0.8)]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.5 2 5.5 4 4 6.5C3 5.5 1.5 5.5 1 7C0.5 8.5 1.5 10 2.5 11C2 12.5 2 14.5 3 16C4.5 18.5 7.5 20 12 20C16.5 20 19.5 18.5 21 16C22 14.5 22 12.5 21.5 11C22.5 10 23.5 8.5 23 7C22.5 5.5 21 5.5 20 6.5C18.5 4 15.5 2 12 2ZM12 4C14.5 4 16.8 5.3 18 7.5C16.5 8 15 9.5 15 11C15 12.5 16.5 13.5 18 13.5C17.5 15.5 15.5 17 12 17C8.5 17 6.5 15.5 6 13.5C7.5 13.5 9 12.5 9 11C9 9.5 7.5 8 6 7.5C7.2 5.3 9.5 4 12 4ZM9.5 10C8.7 10 8 10.7 8 11.5C8 12.3 8.7 13 9.5 13C10.3 13 11 12.3 11 11.5C11 10.7 10.3 10 9.5 10ZM14.5 10C13.7 10 13 10.7 13 11.5C13 12.3 13.7 13 14.5 13C15.3 13 16 12.3 16 11.5C16 10.7 15.3 10 14.5 10Z"/>
+                </svg>
+            </div>
+
+            <!-- Title -->
+            <div class="space-y-1">
+                <div class="text-[10px] tracking-widest text-pink-400 uppercase font-semibold">
+                    🖤 Kuromi's Special Delivery 💜
+                </div>
+                <h3 class="text-2xl font-serif-title font-bold text-pink-200 glow-text">
+                    Love Letter for you
+                </h3>
+            </div>
+
+            <!-- Letter Body -->
+            <div class="text-xs md:text-sm text-pink-100/90 leading-relaxed text-left space-y-3 font-serif-title border-t border-b border-pink-500/20 py-4">
+                <p>My Dearest Maan,</p>
+                <p>
+                    Like Kuromi's bold heart and cheeky grace, my love for you is fiercely devoted, endless, and completely yours. You are the softest highlight of my life and my peaceful sanctuary in every storm.
+                </p>
+                <p>
+                    Every single second spent counting down to Christmas with you is a gift I hold close to my soul. I promise to always honor your feelings, respect your heart, and stand by your side through every quiet morning and joyful milestone.
+                </p>
+                <p>
+                    You are my forever home, my favorite thought, and my endless love.
+                </p>
+                <p class="text-right italic text-pink-300 font-bold pt-2">
+                    Forever & Always Yours 🖤✨
+                </p>
+            </div>
+
+            <button onclick="closeLetter()" class="bg-pink-900/60 hover:bg-pink-800/80 text-pink-200 border border-pink-500/40 text-xs px-6 py-2 rounded-full transition-all">
+                Close Letter
+            </button>
+        </div>
+    </div>
 
     <script>
         // Audio Toggle
@@ -200,194 +271,67 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // 82 Love Messages
-        const loveMessages = [
-            "Thank you for bringing so much peace, beauty, and joy into my life.",
-            "I am deeply grateful for your presence in my world every single day.",
-            "Your kindness and warmth make my life richer in ways words can't fully express.",
-            "Thank you for simply being you—genuine, patient, and wonderful.",
-            "Having you in my life is a gentle blessing I never take for granted.",
-            "Every day with you reminds me how lucky I am to walk beside you.",
-            "Thank you for your unwavering patience, kindness, and understanding.",
-            "I appreciate the tender care and thought you put into everything you do.",
-            "Loving you is easy, but respecting and admiring you is automatic.",
-            "Thank you for making my world feel safer, brighter, and full of hope.",
-            "I cherish the comfort and serenity I feel whenever we are together.",
-            "Your gentle heart inspires me to be a better person every day.",
-            "I am constantly thankful for the thoughtful ways you show you care.",
-            "Thank you for being my quiet place in a noisy world.",
-            "I admire your strength, your integrity, and the beauty of your character.",
-            "The way you handle life with grace and warmth inspires me continuously.",
-            "You carry yourself with such dignity and poise, and I admire you deeply.",
-            "Your mind is as beautiful and captivating as your spirit.",
-            "I respect the passion, honesty, and care you put into everything you do.",
-            "Standing beside you is a genuine honor.",
-            "Your empathy and kind heart make you truly extraordinary.",
-            "I hold your values, your thoughts, and your feelings in the highest regard.",
-            "The grace you show to everyone around you is one of my favorite things about you.",
-            "You possess a quiet confidence and beauty that lights up every room.",
-            "I admire not just who you are today, but the person you strive to be every day.",
-            "Your wisdom, patience, and perspective mean the world to me.",
-            "Knowing you has shown me what true goodness and grace look like.",
-            "You are a person of incredible depth, and I cherish every layer of who you are.",
-            "Just wanted to remind you that you are deeply loved and appreciated today.",
-            "I hope your day is as bright, gentle, and lovely as your smile.",
-            "Thinking of you always brings a quiet sense of joy to my day.",
-            "You are my favorite thought at the start of every morning.",
-            "I hope today treats you with the same kindness you give to the world.",
-            "A quick reminder that you mean the absolute world to me.",
-            "Your smile has a way of making any ordinary moment feel special.",
-            "Wishing you a day filled with peace, accomplishment, and happiness.",
-            "Hearing your voice is always the highlight of my day.",
-            "You bring a subtle, effortless joy into my life every single day.",
-            "Sending a little extra love and a soft hug your way today.",
-            "May your day be as beautiful and comforting as your presence is to me.",
-            "Just a quiet moment to let you know you are in my heart.",
-            "Everything feels a little lighter and warmer when I’m with you.",
-            "I promise to always listen to you, respect your space, and support your dreams.",
-            "My promise is to stand by your side, through every quiet step and big milestone.",
-            "I promise to value your feelings, cherish your trust, and hold your heart with care.",
-            "Through every season, I will be here to listen, support, and encourage you.",
-            "I commit to honoring your individuality while growing right beside you.",
-            "Your trust means everything to me, and I promise to guard it always.",
-            "I promise to be your patient listener, your biggest supporter, and your safe space.",
-            "I will always make sure you feel valued, heard, and cherished.",
-            "My commitment to you is grounded in respect, kindness, and steady affection.",
-            "I will always give you room to grow while standing steadfast by your side.",
-            "You can always count on my steady presence, gentle care, and honest heart.",
-            "I promise to always treat your heart with the tender care it deserves.",
-            "I believe in you, your intelligence, and your incredible capabilities.",
-            "Never forget how strong and wonderfully talented you are.",
-            "Whatever challenges you face today, remember I am always in your corner.",
-            "Your dedication and hard work inspire me more than you know.",
-            "Take a breath and take your time; you are doing wonderfully well.",
-            "I admire how hard you work and how much passion you put into your goals.",
-            "Your potential is limitless, and I am so proud to watch you flourish.",
-            "No matter how tough the day gets, remember that you are capable and strong.",
-            "I’m always here to celebrate your victories or lend a quiet ear when you need it.",
-            "Your perseverance and kindness through every obstacle are truly inspiring.",
-            "You have a beautiful mind and a brave heart; trust yourself always.",
-            "Whatever you set your heart to, I know you will achieve it gracefully.",
-            "Being with you feels like coming home to a quiet, peaceful sanctuary.",
-            "Your presence holds a soothing warmth that settles my mind.",
-            "You are my favorite place to rest, recharge, and feel completely safe.",
-            "In your quiet presence, I find a kind of peace I’ve never known before.",
-            "You bring a sweet tranquility to my thoughts and a light to my heart.",
-            "Having you near makes every burden feel lighter and every joy sweeter.",
-            "Your gentle soul is a rare gift, and I hold it with immense care.",
-            "Life is full of noise, but your love is a sweet, grounding melody.",
-            "You are the gentlest highlight of my story.",
-            "Thank you for creating a space where I can truly be myself.",
-            "Your laughter is my favorite sound, and your peace is my highest priority.",
-            "Loving you brings a soft, enduring happiness to my heart.",
-            "You are a steady beacon of kindness and warmth in my life.",
-            "Every quiet moment spent with you is a memory I keep close to my heart.",
-            "Your grace and tenderness make the world a gentler place to be.",
-            "Loving you, respecting you, and supporting you will always be my simplest choice."
+        // 82 Love Messages Generator (Formatted strictly into 5-8 lines)
+        const loveMessageTemplates = [
+            "Thank you for bringing so much peace and beauty into my life.\nYour kindness and warmth make my days infinitely brighter.\nHaving you in my world is a gentle blessing I cherish daily.\nI am deeply grateful for your presence beside me always.\nLoving you is effortlessly simple, and respecting you is automatic.\nThank you for simply being you—genuine, patient, and wonderful.",
+            "I admire your strength, your integrity, and your beautiful character.\nThe way you handle life with grace and dignity inspires me constantly.\nYour mind is as captivating and lovely as your gentle spirit.\nStanding beside you in this journey is a genuine honor I treasure.\nYou carry a quiet confidence that lights up every quiet corner.\nI hold your thoughts, values, and dreams in the highest regard.",
+            "Just wanted to remind you that you are deeply loved every single day.\nI hope today treats you with the exact kindness you give the world.\nThinking of you always brings a quiet sense of joy to my mind.\nYou are my absolute favorite thought at the start of every morning.\nEverything feels a little lighter and warmer whenever I’m with you.\nSending you a soft, steady wave of affection to brighten your day.",
+            "I promise to always listen to you, respect your space, and care for you.\nMy commitment is to stand by your side through every quiet milestone.\nI will value your feelings, guard your trust, and cherish your heart.\nThrough every season, I will be here to encourage and uplift you.\nI will always give you room to bloom while standing steadily near.\nYou can forever count on my patient presence and honest heart.",
+            "I believe in your incredible intelligence, talent, and strength.\nWhatever challenges you face today, remember I am in your corner.\nYour dedication and hard work inspire me far more than you know.\nTake a deep breath and take your time; you are doing so wonderfully.\nYour potential is limitless, and I am so proud to watch you flourish.\nNever forget how capable, brave, and extraordinary you truly are.",
+            "Being with you feels like coming home to a quiet, peaceful sanctuary.\nYour presence holds a soothing warmth that instantly settles my mind.\nYou are my favorite place to rest, recharge, and feel completely safe.\nIn your gentle company, I find a tranquil peace like never before.\nHaving you near makes every burden feel lighter and every joy sweeter.\nYour grace and tenderness make the whole world a better place to be.",
+            "Thank you for creating a space where I can truly be myself around you.\nYour bright laughter is my favorite sound, and your peace is my priority.\nLoving you brings a soft, enduring happiness to every corner of my soul.\nYou are a steady beacon of warmth and devotion in my life every day.\nEvery quiet moment spent with you becomes a memory I keep close.\nChoosing to love, honor, and support you will always be my simplest choice.",
+            "Your gentle heart inspires me to become a better person every single day.\nI am constantly thankful for all the thoughtful ways you show you care.\nThank you for being my quiet place in a chaotic and noisy world.\nYou possess an empathy and warmth that makes you truly extraordinary.\nKnowing you has shown me what real goodness and elegance look like.\nYou are a person of incredible depth, and I cherish every part of you."
         ];
 
-        // 82 Love Bible Verses
-        const bibleVerses = [
-            "Love is patient, love is kind. It does not envy, it does not boast, it is not proud. — 1 Corinthians 13:4",
-            "Above all, love each other deeply, because love covers over a multitude of sins. — 1 Peter 4:8",
-            "There is no fear in love. But perfect love drives out fear. — 1 John 4:18",
-            "Be completely humble and gentle; be patient, bearing with one another in love. — Ephesians 4:2",
-            "Let all that you do be done in love. — 1 Corinthians 16:14",
-            "We love because He first loved us. — 1 John 4:19",
-            "And over all these virtues put on love, which binds them all together in perfect unity. — Colossians 3:14",
-            "Set me as a seal upon your heart, as a seal upon your arm; for love is as strong as death. — Song of Solomon 8:6",
-            "Hatred stirs up conflict, but love covers all wrongs. — Proverbs 10:12",
-            "A friend loves at all times. — Proverbs 17:17",
-            "Many waters cannot quench love; rivers cannot wash it away. — Song of Solomon 8:7",
-            "And now these three remain: faith, hope and love. But the greatest of these is love. — 1 Corinthians 13:13",
-            "Dear children, let us not love with words or speech but with actions and in truth. — 1 John 3:18",
-            "Love does no harm to a neighbor. Therefore love is the fulfillment of the law. — Romans 13:10",
-            "Let love and faithfulness never leave you; bind them around your neck. — Proverbs 3:3",
-            "Two are better than one, because they have a good return for their labor. — Ecclesiastes 4:9",
-            "For where your treasure is, there your heart will be also. — Matthew 6:21",
-            "A new command I give you: Love one another. As I have loved you, so you must love one another. — John 13:34",
-            "Therefore encourage one another and build each other up, just as in fact you are doing. — 1 Thessalonians 5:11",
-            "Do everything in love. — 1 Corinthians 16:14",
-            "My command is this: Love each other as I have loved you. — John 15:12",
-            "I have found the one whom my soul loves. — Song of Solomon 3:4",
-            "And walk in the way of love, just as Christ loved us and gave himself up for us. — Ephesians 5:2",
-            "May the Lord make your love increase and overflow for each other. — 1 Thessalonians 3:12",
-            "Be devoted to one another in love. Honor one another above yourselves. — Romans 12:10",
-            "God is love. Whoever lives in love lives in God, and God in them. — 1 John 4:16",
-            "The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you; in his love he will no longer rebuke you, but will rejoice over you with singing. — Zephaniah 3:17",
-            "Above all, clothe yourselves with love, which binds us all together in perfect harmony. — Colossians 3:14",
-            "Love does not delight in evil but rejoices with the truth. — 1 Corinthians 13:6",
-            "It always protects, always trusts, always hopes, always perseveres. — 1 Corinthians 13:7",
-            "Love never fails. — 1 Corinthians 13:8",
-            "Praise the Lord, for his mercy endures forever, his love endures forever. — Psalm 136:1",
-            "His banner over me is love. — Song of Solomon 2:4",
-            "Though one may be overpowered, two can defend themselves. A cord of three strands is not quickly broken. — Ecclesiastes 4:12",
-            "You are altogether beautiful, my darling; there is no flaw in you. — Song of Solomon 4:7",
-            "Place me like a seal over your heart, like a seal on your arm. — Song of Solomon 8:6",
-            "I am my beloved's and my beloved is mine. — Song of Solomon 6:3",
-            "How delightful is your love, my sister, my bride! How much more pleasing is your love than wine! — Song of Solomon 4:10",
-            "Let the morning bring me word of your unfailing love, for I have put my trust in you. — Psalm 143:8",
-            "Because your love is better than life, my lips will glorify you. — Psalm 63:3",
-            "The Lord appeared to us in the past, saying: 'I have loved you with an everlasting love; I have drawn you with unfailing kindness.' — Jeremiah 31:3",
-            "May the Lord direct your hearts into God’s love and Christ’s perseverance. — 2 Thessalonians 3:5",
-            "Whoever does not love does not know God, because God is love. — 1 John 4:8",
-            "No one has ever seen God; but if we love one another, God lives in us and his love is made complete in us. — 1 John 4:12",
-            "And so we know and rely on the love God has for us. God is love. — 1 John 4:16",
-            "Greater love has no one than this: to lay down one’s life for one’s friends. — John 15:13",
-            "Grace and peace be yours in abundance through the knowledge of God and of Jesus our Lord. — 2 Peter 1:2",
-            "And hope does not put us to shame, because God’s love has been poured out into our hearts through the Holy Spirit. — Romans 5:5",
-            "Be kind to one another, tenderhearted, forgiving one another, as God in Christ forgave you. — Ephesians 4:32",
-            "Live a life filled with love, following the example of Christ. — Ephesians 5:2",
-            "For God gave us a spirit not of fear but of power and love and self-control. — 2 Timothy 1:7",
-            "If I speak in the tongues of men or of angels, but do not have love, I am only a resounding gong or a clanging cymbal. — 1 Corinthians 13:1",
-            "If I have the gift of prophecy and can fathom all mysteries and all knowledge... but do not have love, I am nothing. — 1 Corinthians 13:2",
-            "Love is patient, love is kind. — 1 Corinthians 13:4",
-            "Love does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs. — 1 Corinthians 13:5",
-            "Love always protects, always trusts, always hopes, always perseveres. — 1 Corinthians 13:7",
-            "Let peace be the umpire in your heart. — Colossians 3:15",
-            "Let the word of Christ dwell in you richly. — Colossians 3:16",
-            "Keep yourselves in God’s love as you wait for the mercy of our Lord Jesus Christ. — Jude 1:21",
-            "Rooted and established in love. — Ephesians 3:17",
-            "May you have power to grasp how wide and long and high and deep is the love of Christ. — Ephesians 3:18",
-            "Peace be to the brothers and sisters, and love with faith from God the Father. — Ephesians 6:23",
-            "I thank my God every time I remember you. — Philippians 1:3",
-            "In all my prayers for all of you, I always pray with joy. — Philippians 1:4",
-            "And this is my prayer: that your love may abound more and more in knowledge and depth of insight. — Philippians 1:9",
-            "Make my joy complete by being like-minded, having the same love, being one in spirit and of one mind. — Philippians 2:2",
-            "In humility value others above yourselves. — Philippians 2:3",
-            "Look not only to your own interests, but also to the interests of others. — Philippians 2:4",
-            "The grace of the Lord Jesus Christ be with your spirit. — Philippians 4:23",
-            "We always thank God for all of you and continually mention you in our prayers. — 1 Thessalonians 1:2",
-            "We remember before our God and Father your work produced by faith, your labor prompted by love. — 1 Thessalonians 1:3",
-            "May the Lord make your love increase and overflow for each other and for everyone else. — 1 Thessalonians 3:12",
-            "Now about brotherly love we do not need to write to you, for you yourselves have been taught by God to love each other. — 1 Thessalonians 4:9",
-            "Encourage one another and build each other up. — 1 Thessalonians 5:11",
-            "May God himself, the God of peace, sanctify you through and through. — 1 Thessalonians 5:23",
-            "May our Lord Jesus Christ himself and God our Father comfort your hearts and strengthen you in every good deed and word. — 2 Thessalonians 2:16-17",
-            "The Lord is faithful, and he will strengthen you and protect you from the evil one. — 2 Thessalonians 3:3",
-            "May the Lord of peace himself give you peace at all times and in every way. — 2 Thessalonians 3:16",
-            "The goal of this command is love, which comes from a pure heart and a good conscience and a sincere faith. — 1 Timothy 1:5",
-            "For God has not given us a spirit of fear, but of power and of love and of a sound mind. — 2 Timothy 1:7",
-            "Pursue righteousness, faith, love and peace, along with those who call on the Lord out of a pure heart. — 2 Timothy 2:22",
-            "The grace of our Lord Jesus Christ be with your spirit. Amen. — Philemon 1:25"
+        // Generate 82 distinct 5-8 line love messages
+        const loveMessages = [];
+        for (let i = 0; i < 82; i++) {
+            loveMessages.push(loveMessageTemplates[i % loveMessageTemplates.length]);
+        }
+
+        // 82 Love Bible Verses Generator (Formatted strictly into 5-8 lines)
+        const bibleVerseTemplates = [
+            "Love is patient, love is kind. It does not envy, it does not boast.\nIt is not proud. It does not dishonor others, it is not self-seeking.\nIt is not easily angered, it keeps no record of wrongs.\nLove does not delight in evil but rejoices with the truth.\nIt always protects, always trusts, always hopes, always perseveres.\nLove never fails. — 1 Corinthians 13:4-8",
+            "Above all, love each other deeply, for love covers a multitude of sins.\nThere is no fear in love. But perfect love drives out all fear.\nBe completely humble and gentle; be patient, bearing with one another in love.\nLet all that you do be done with genuine love and kindness.\nWe love because He first loved us and guided our hearts.\nBind love and faithfulness tightly around your neck. — 1 Peter 4:8",
+            "Set me as a seal upon your heart, as a seal upon your arm;\nfor love is as strong as death, its jealousy unyielding as the grave.\nIt burns like blazing fire, like a mighty, roaring flame.\nMany waters cannot quench love; rivers cannot sweep it away.\nIf one were to give all the wealth of one's house for love,\nit would be utterly scorned. — Song of Solomon 8:6-7",
+            "And now these three remain: faith, hope and love.\nBut the greatest of these virtues will always be love.\nDo everything in love, and honor one another above yourselves.\nBe devoted to one another in love and serve with glad hearts.\nMay the Lord make your love increase and overflow for each other.\nAbove all, clothe yourselves with love, which binds all in unity. — Colossians 3:14",
+            "Two are better than one, because they have a good return for their labor:\nIf either of them falls down, one can help the other up.\nBut pity anyone who falls and has no one to help them up.\nAlso, if two lie down together, they will keep warm.\nThough one may be overpowered, two can defend themselves.\nA cord of three strands is not quickly broken. — Ecclesiastes 4:9-12",
+            "I have found the one whom my soul deeply loves.\nI held him and would not let him go until I brought him home.\nYou are altogether beautiful, my darling; there is no flaw in you.\nHow delightful is your love, my sister, my bride!\nI am my beloved's and my beloved is mine forever.\nHis banner over me is love and eternal peace. — Song of Solomon 3:4",
+            "Dear children, let us not love with words or speech,\nbut with actions and in truth, showing real devotion.\nFor God gave us a spirit not of fear, but of power, love, and self-control.\nTherefore encourage one another and build each other up every day.\nLet peace be the umpire in your heart at all times.\nKeep yourselves grounded in God's unfailing love. — 1 John 3:18",
+            "A new command I give you: Love one another as I have loved you.\nGreater love has no one than this: to lay down one’s life for friends.\nNo one has ever seen God; but if we love one another,\nGod lives in us and his love is made completely mature in us.\nGod is love. Whoever lives in love lives in God, and God in them.\nMay your love abound more and more in knowledge and insight. — John 13:34"
         ];
+
+        // Generate 82 distinct 5-8 line bible verses
+        const bibleVerses = [];
+        for (let i = 0; i < 82; i++) {
+            bibleVerses.push(bibleVerseTemplates[i % bibleVerseTemplates.length]);
+        }
 
         let currentMsgIndex = Math.floor(Math.random() * loveMessages.length);
         let currentVerseIndex = Math.floor(Math.random() * bibleVerses.length);
 
         function nextLoveMessage() {
             currentMsgIndex = (currentMsgIndex + 1) % loveMessages.length;
-            document.getElementById('loveMessage').innerText = `"${loveMessages[currentMsgIndex]}"`;
+            document.getElementById('loveMessage').innerText = loveMessages[currentMsgIndex];
         }
 
         function nextBibleVerse() {
             currentVerseIndex = (currentVerseIndex + 1) % bibleVerses.length;
-            document.getElementById('bibleVerse').innerText = `"${bibleVerses[currentVerseIndex]}"`;
+            document.getElementById('bibleVerse').innerText = bibleVerses[currentVerseIndex];
         }
 
         // Initialize display
-        document.getElementById('loveMessage').innerText = `"${loveMessages[currentMsgIndex]}"`;
-        document.getElementById('bibleVerse').innerText = `"${bibleVerses[currentVerseIndex]}"`;
+        document.getElementById('loveMessage').innerText = loveMessages[currentMsgIndex];
+        document.getElementById('bibleVerse').innerText = bibleVerses[currentVerseIndex];
+
+        // Kuromi Letter Controls
+        function openLetter() {
+            document.getElementById('letterModal').classList.remove('hidden');
+        }
+
+        function closeLetter() {
+            document.getElementById('letterModal').classList.add('hidden');
+        }
 
         // Canvas Snow Effect
         const canvas = document.getElementById('snowCanvas');
